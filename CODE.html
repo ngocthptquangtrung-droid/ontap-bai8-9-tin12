@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm Tra Trắc Nghiệm Trực Tuyến - Trường THPT Nguyễn Huệ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Be Vietnam Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Be Vietnam Pro"', 'sans-serif'],
+                    },
+                    colors: {
+                        bazan: {
+                            50: '#fdf3f2',
+                            100: '#fbe5e2',
+                            600: '#b83227',
+                            700: '#99241b',
+                            800: '#7f1f18',
+                            900: '#691d17',
+                        },
+                        daquy: {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdf8f5;
+            background-image: radial-gradient(#e5d5ce 0.75px, transparent 0.75px);
+            background-size: 20px 20px;
+        }
+        .option-locked {
+            pointer-events: none;
+        }
+        code.html-tag {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: #f3f4f6;
+            color: #99241b;
+            padding: 0.1rem 0.35rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fdf3f2; }
+        ::-webkit-scrollbar-thumb { background: #b83227; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- HEADER BANNER -->
+    <header class="bg-gradient-to-r from-bazan-800 via-bazan-700 to-bazan-600 text-white shadow-lg border-b-4 border-daquy-400 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full bg-daquy-400 text-bazan-900 flex items-center justify-center font-extrabold text-xl shadow-md shrink-0">
+                    <i class="fa-solid fa-sun"></i>
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-wider text-daquy-300 font-semibold">Trường THPT Nguyễn Huệ - Sa Thầy</p>
+                    <h1 class="text-base sm:text-lg font-bold leading-tight">Bài 8, 9: TIN HỌC 12 <span class="text-xs font-normal bg-bazan-900/60 px-2 py-0.5 rounded ml-1">Định dạng văn bản, Danh sách &amp; Bảng</span></h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 text-sm">
+                <div class="hidden md:flex items-center gap-1.5 text-daquy-100">
+                    <i class="fa-solid fa-chalkboard-user text-daquy-400"></i>
+                    <span>GV: <strong>Hoàng Thị Ngọc</strong></span>
+                </div>
+                <!-- Đồng hồ đếm thời gian -->
+                <div id="timer-box" class="hidden bg-bazan-900/90 border border-daquy-400/60 px-3.5 py-1.5 rounded-full flex items-center gap-2 font-mono font-bold text-daquy-400 shadow-inner">
+                    <i class="fa-regular fa-clock animate-pulse"></i>
+                    <span id="timer-display">00:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8">
+
+        <!-- MÀN HÌNH 1: NHẬP THÔNG TIN HỌC SINH -->
+        <section id="login-screen" class="bg-white rounded-2xl shadow-xl border-t-8 border-bazan-700 overflow-hidden max-w-xl mx-auto transition-all">
+            <div class="bg-daquy-50 px-6 py-5 border-b border-daquy-200 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-bazan-700 text-daquy-400 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-bazan-800">Thông Tin Thí Sinh</h2>
+                    <p class="text-xs text-gray-600">Vui lòng điền đầy đủ thông tin trước khi bắt đầu làm bài</p>
+                </div>
+            </div>
+
+            <form id="student-form" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        <i class="fa-solid fa-signature text-bazan-600 mr-1"></i> Họ và tên học sinh <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="fullName" required placeholder="Ví dụ: Nguyễn Văn An"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-bazan-600 focus:border-bazan-600 outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fa-solid fa-users-rectangle text-bazan-600 mr-1"></i> Lớp <span class="text-red-500">*</span>
+                        </label>
+                        <select id="className" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-bazan-600 focus:border-bazan-600 outline-none bg-white transition">
+                            <option value="">-- Chọn lớp --</option>
+                            <option value="12A1">12A1</option>
+                            <option value="12A2">12A2</option>
+                            <option value="12C1">12C1</option>
+                            <option value="12C2">12C2</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fa-solid fa-cake-candles text-bazan-600 mr-1"></i> Ngày sinh <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" id="dob" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-bazan-600 focus:border-bazan-600 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Lưu ý quy chế -->
+                <div class="bg-bazan-50 border border-bazan-200 rounded-xl p-4 text-xs text-bazan-900 space-y-1.5">
+                    <p class="font-bold flex items-center gap-1.5 text-bazan-700">
+                        <i class="fa-solid fa-shield-halved"></i> Cấu trúc đề &amp; Quy định làm bài (Thang 10.0):
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li><strong>Phần I:</strong> 6 câu trắc nghiệm nhiều lựa chọn (6.0 điểm - 1.0đ/câu).</li>
+                        <li><strong>Phần II:</strong> 2 câu trắc nghiệm Đúng/Sai (2.0 điểm - 1.0đ/câu).</li>
+                        <li><strong>Phần III:</strong> 1 câu điền khuyết gồm 4 vị trí (2.0 điểm - 0.5đ/vị trí).</li>
+                        <li><strong>Khóa đáp án tức thì:</strong> Mỗi phương án sau khi chọn sẽ tự động khóa cứng, không thể thay đổi.</li>
+                    </ul>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-bazan-700 to-bazan-600 hover:from-bazan-800 hover:to-bazan-700 text-white font-bold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition flex items-center justify-center gap-2">
+                    <span>BẮT ĐẦU LÀM BÀI</span>
+                    <i class="fa-solid fa-arrow-right text-daquy-400"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- MÀN HÌNH 2: BÀI KIỂM TRA -->
+        <section id="quiz-screen" class="hidden space-y-8">
+            <!-- Thanh thông tin thí sinh đang thi -->
+            <div class="bg-white rounded-xl shadow-sm border border-daquy-300 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap items-center gap-4 text-sm">
+                    <span class="flex items-center gap-1.5 text-gray-700">
+                        <i class="fa-solid fa-user text-bazan-600"></i> Thí sinh: <strong id="display-name" class="text-bazan-800"></strong>
+                    </span>
+                    <span class="flex items-center gap-1.5 text-gray-700">
+                        <i class="fa-solid fa-school text-bazan-600"></i> Lớp: <strong id="display-class" class="text-bazan-800"></strong>
+                    </span>
+                    <span class="flex items-center gap-1.5 text-gray-700">
+                        <i class="fa-regular fa-calendar text-bazan-600"></i> Ngày sinh: <strong id="display-dob" class="text-bazan-800"></strong>
+                    </span>
+                </div>
+                <div class="text-xs font-semibold bg-daquy-100 text-bazan-800 px-3 py-1 rounded-full border border-daquy-400">
+                    Đã hoàn thành: <span id="progress-count">0</span> / 9 câu
+                </div>
+            </div>
+
+            <!-- PHẦN I -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3 border-b-2 border-bazan-600 pb-2">
+                    <span class="bg-bazan-700 text-daquy-400 font-bold px-3 py-1 rounded-lg text-sm">PHẦN I</span>
+                    <h2 class="text-lg font-bold text-bazan-900">Trắc nghiệm nhiều lựa chọn (6 câu - 6.0 điểm, 1.0đ/câu)</h2>
+                </div>
+                <div id="part1-container" class="space-y-5"></div>
+            </div>
+
+            <!-- PHẦN II -->
+            <div class="space-y-4 pt-4">
+                <div class="flex items-center gap-3 border-b-2 border-daquy-500 pb-2">
+                    <span class="bg-daquy-500 text-bazan-900 font-bold px-3 py-1 rounded-lg text-sm">PHẦN II</span>
+                    <h2 class="text-lg font-bold text-bazan-900">Trắc nghiệm Đúng / Sai (2 câu - 2.0 điểm)</h2>
+                </div>
+                <p class="text-xs text-gray-600 italic bg-white px-4 py-2 rounded-lg border border-gray-200">
+                    <i class="fa-solid fa-circle-info text-bazan-600 mr-1"></i> Quy tắc tính điểm mỗi câu nhóm (tối đa 1.0đ): Đúng 1 ý: 0.1đ; đúng 2 ý: 0.25đ; đúng 3 ý: 0.5đ; đúng 4 ý: 1.0đ. (Mỗi ý chọn xong sẽ tự động khóa).
+                </p>
+                <div id="part2-container" class="space-y-5"></div>
+            </div>
+
+            <!-- PHẦN III -->
+            <div class="space-y-4 pt-4">
+                <div class="flex items-center gap-3 border-b-2 border-bazan-600 pb-2">
+                    <span class="bg-bazan-800 text-daquy-400 font-bold px-3 py-1 rounded-lg text-sm">PHẦN III</span>
+                    <h2 class="text-lg font-bold text-bazan-900">Câu hỏi Điền khuyết (1 câu - 2.0 điểm, 0.5đ/vị trí)</h2>
+                </div>
+                <div id="part3-container"></div>
+            </div>
+
+            <!-- NÚT NỘP BÀI -->
+            <div class="pt-4 pb-10 flex justify-center">
+                <button id="submit-btn" onclick="confirmSubmit()"
+                    class="px-10 py-4 rounded-2xl bg-gradient-to-r from-bazan-700 to-bazan-600 hover:from-bazan-800 hover:to-bazan-700 text-white font-extrabold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 transition flex items-center gap-3">
+                    <i class="fa-solid fa-paper-plane text-daquy-400"></i>
+                    <span>NỘP BÀI VÀ XEM KẾT QUẢ</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- MÀN HÌNH 3: KẾT QUẢ & XEM LẠI CHI TIẾT -->
+        <section id="result-screen" class="hidden space-y-8">
+            <!-- Bảng tổng hợp điểm -->
+            <div class="bg-white rounded-2xl shadow-xl border-t-8 border-daquy-500 overflow-hidden">
+                <div class="bg-gradient-to-r from-bazan-800 to-bazan-700 text-white p-6 text-center relative">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-daquy-400 text-bazan-900 text-3xl mb-3 shadow-lg">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold uppercase tracking-wide">Kết Quả Bài Kiểm Tra</h2>
+                    <p id="res-student-info" class="text-daquy-200 text-sm mt-1"></p>
+                    
+                    <!-- Trạng thái đồng bộ Google Sheets -->
+                    <div id="sync-status" class="mt-3 inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-medium bg-bazan-900/70 text-daquy-300 border border-daquy-400/40">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Đang đồng bộ điểm về hệ thống của giáo viên...
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-center">
+                        <div class="bg-bazan-50 p-3.5 rounded-xl border border-bazan-200">
+                            <p class="text-xs text-gray-500 font-semibold uppercase">Phần I (6.0đ)</p>
+                            <p id="res-part1" class="text-2xl font-extrabold text-bazan-700 mt-1">0.0</p>
+                        </div>
+                        <div class="bg-daquy-50 p-3.5 rounded-xl border border-daquy-300">
+                            <p class="text-xs text-gray-500 font-semibold uppercase">Phần II (2.0đ)</p>
+                            <p id="res-part2" class="text-2xl font-extrabold text-daquy-600 mt-1">0.0</p>
+                        </div>
+                        <div class="bg-bazan-50 p-3.5 rounded-xl border border-bazan-200">
+                            <p class="text-xs text-gray-500 font-semibold uppercase">Phần III (2.0đ)</p>
+                            <p id="res-part3" class="text-2xl font-extrabold text-bazan-700 mt-1">0.0</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-bazan-700 to-bazan-800 p-3.5 rounded-xl text-white shadow-md">
+                            <p class="text-xs text-daquy-300 font-semibold uppercase">Tổng Điểm (10.0đ)</p>
+                            <p id="res-total" class="text-2xl sm:text-3xl font-extrabold text-daquy-400 mt-1">0.00</p>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1 bg-gray-50 p-3.5 rounded-xl border border-gray-200 flex flex-col justify-center">
+                            <p class="text-xs text-gray-500 font-semibold uppercase">Xếp Loại</p>
+                            <p id="res-rank" class="text-xl font-extrabold mt-1">--</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center text-xs text-gray-500">
+                        Thời gian hoàn thành: <strong id="res-time" class="text-gray-700"></strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng xem lại chi tiết -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-bold text-bazan-900 flex items-center gap-2 border-b-2 border-bazan-600 pb-2">
+                    <i class="fa-solid fa-magnifying-glass-chart text-bazan-600"></i>
+                    <span>Xem Lại Chi Tiết Đáp Án &amp; Lời Giải</span>
+                </h3>
+                <div id="review-container" class="space-y-5"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-bazan-900 text-daquy-100/80 text-center py-4 text-xs border-t border-bazan-800 mt-auto">
+        <p>© 2026 Trường THPT Nguyễn Huệ - Sa Thầy | Giáo viên: Hoàng Thị Ngọc</p>
+    </footer>
+
+    <!-- JAVASCRIPT XỬ LÝ LOGIC -->
+    <script>
+        // =========================================================================
+        // CẤU HÌNH ĐƯỜNG DẪN GOOGLE APPS SCRIPT WEB APP URL CỦA GIÁO VIÊN TẠI ĐÂY:
+        // =========================================================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/DÁN_MÃ_CỦA_BẠN_VÀO_ĐÂY/exec";
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        // =========================================================================
+        // NGÂN HÀNG CÂU HỎI: BÀI 8 & BÀI 9 - TIN HỌC 12
+        // =========================================================================
+        const part1Questions = [
+            {
+                id: "P1_1",
+                tag: "Bài 8",
+                question: "Trong HTML, để tạo tiêu đề văn bản có kích thước chữ lớn nhất, ta sử dụng thẻ nào sau đây?",
+                options: ["<head>", "<h6>", "<h1>", "<header>"],
+                answer: 2,
+                explanation: "Các thẻ tiêu đề trong HTML được định nghĩa từ <h1> đến <h6>, trong đó <h1> có kích thước chữ lớn nhất và <h6> có kích thước chữ nhỏ nhất."
+            },
+            {
+                id: "P1_2",
+                tag: "Bài 8",
+                question: "Cặp thẻ nào sau đây được dùng để định dạng văn bản hiển thị dưới dạng chỉ số dưới (ví dụ: H₂O)?",
+                options: ["<sup> và </sup>", "<sub> và </sub>", "<under> và </under>", "<low> và </low>"],
+                answer: 1,
+                explanation: "Thẻ <sub> (subscript) dùng để tạo chỉ số dưới, còn thẻ <sup> (superscript) dùng để tạo chỉ số trên (ví dụ: x²)."
+            },
+            {
+                id: "P1_3",
+                tag: "Bài 8",
+                question: "Thẻ HTML nào sau đây là thẻ đơn, được sử dụng để ngắt dòng văn bản tại vị trí chèn?",
+                options: ["<p>", "<hr>", "<br>", "<div>"],
+                answer: 2,
+                explanation: "Thẻ <br> (break) dùng để ngắt dòng ngay lập tức mà không tạo khoảng cách đoạn văn mới như thẻ <p>."
+            },
+            {
+                id: "P1_4",
+                tag: "Bài 9",
+                question: "Để tạo một danh sách có thứ tự (được đánh số tự động 1, 2, 3...) trong HTML, ta sử dụng cặp thẻ nào sau đây?",
+                options: ["<ul> và </ul>", "<ol> và </ol>", "<list> và </list>", "<dl> và </dl>"],
+                answer: 1,
+                explanation: "Thẻ <ol> (Ordered List) tạo danh sách có thứ tự, còn <ul> (Unordered List) tạo danh sách không thứ tự (dùng ký hiệu đầu dòng)."
+            },
+            {
+                id: "P1_5",
+                tag: "Bài 9",
+                question: "Trong cấu trúc bảng HTML, thẻ nào được dùng để khai báo một hàng (dòng) mới trong bảng?",
+                options: ["<td>", "<th>", "<tr>", "<table>"],
+                answer: 2,
+                explanation: "Thẻ <tr> (Table Row) dùng để định nghĩa một hàng. Bên trong <tr> chứa các thẻ ô dữ liệu <td> hoặc ô tiêu đề <th>."
+            },
+            {
+                id: "P1_6",
+                tag: "Bài 9",
+                question: "Khi muốn gộp 3 cột liền nhau trên cùng một hàng thành 1 ô duy nhất, ta sử dụng thuộc tính nào trong thẻ <td> hoặc <th>?",
+                options: ['rowspan="3"', 'colspan="3"', 'mergecol="3"', 'span="3"'],
+                answer: 1,
+                explanation: 'Thuộc tính colspan (column span) dùng để gộp các cột theo chiều ngang. Thuộc tính rowspan dùng để gộp các hàng theo chiều dọc.'
+            }
+        ];
+
+        const part2Questions = [
+            {
+                id: "P2_1",
+                tag: "Bài 8 - Định dạng văn bản",
+                stem: "Một học sinh thực hành thiết kế trang web HTML cá nhân và đưa ra các nhận định về việc định dạng văn bản. Mỗi nhận định sau đây là Đúng hay Sai?",
+                subQuestions: [
+                    {
+                        label: "a) Thẻ <b> và thẻ <i> lần lượt được dùng để định dạng văn bản in đậm và in nghiêng.",
+                        answer: true,
+                        explanation: "Đúng. Thẻ <b> (bold) làm chữ in đậm, thẻ <i> (italic) làm chữ in nghiêng."
+                    },
+                    {
+                        label: "b) Thẻ <mark> được dùng để tô sáng (highlight) đoạn văn bản được chọn trên trang web với màu nền mặc định là màu vàng.",
+                        answer: true,
+                        explanation: "Đúng. Thẻ <mark> tô sáng đoạn văn bản thu hút sự chú ý của người đọc."
+                    },
+                    {
+                        label: "c) Thẻ <blockquote> được dùng để ngắt dòng và chèn một đường kẻ ngang phân cách giữa các đoạn văn.",
+                        answer: false,
+                        explanation: "Sai. Thẻ <blockquote> dùng để định dạng đoạn văn bản trích dẫn (thường lùi lề). Thẻ chèn đường kẻ ngang phân cách là <hr>."
+                    },
+                    {
+                        label: "d) Khi đặt đoạn văn bản trong cặp thẻ <pre>...</pre>, trình duyệt sẽ giữ nguyên các khoảng trắng và ký tự xuống dòng đúng như khi soạn thảo mã nguồn.",
+                        answer: true,
+                        explanation: "Đúng. Thẻ <pre> (preformatted text) hiển thị nguyên văn cấu trúc khoảng trắng và xuống dòng của người soạn thảo."
+                    }
+                ]
+            },
+            {
+                id: "P2_2",
+                tag: "Bài 9 - Danh sách và Bảng trong HTML",
+                stem: "Khi thiết kế bảng 'Thời khóa biểu' và 'Danh sách học sinh' bằng HTML, học sinh phân tích các thẻ và thuộc tính bảng. Các phát biểu sau đây là Đúng hay Sai?",
+                subQuestions: [
+                    {
+                        label: "a) Trong danh sách không thứ tự <ul>...</ul>, mỗi phần tử danh sách phải được đặt bên trong cặp thẻ <li>...</li>.",
+                        answer: true,
+                        explanation: "Đúng. Cả <ul> và <ol> đều sử dụng thẻ <li> (List Item) để chứa từng phần tử."
+                    },
+                    {
+                        label: "b) Thẻ <th> dùng để định nghĩa ô dữ liệu thường, mặc định hiển thị chữ thường và căn lề trái.",
+                        answer: false,
+                        explanation: "Sai. Thẻ <th> (Table Header) dùng để khai báo ô tiêu đề (chữ mặc định in đậm và căn giữa). Thẻ <td> (Table Data) mới là ô dữ liệu thường (chữ thường, căn trái)."
+                    },
+                    {
+                        label: "c) Thuộc tính rowspan=\"2\" được khai báo ở một ô nhằm gộp ô đó với ô ngay bên dưới nó theo chiều dọc.",
+                        answer: true,
+                        explanation: "Đúng. Thuộc tính rowspan xác định số lượng hàng cần gộp theo chiều dọc."
+                    },
+                    {
+                        label: "d) Người lập trình có thể lồng một danh sách <ul> hoặc <ol> vào bên trong một ô <td> của bảng HTML.",
+                        answer: true,
+                        explanation: "Đúng. Ô <td> trong HTML có thể chứa các phần tử HTML khác như danh sách, hình ảnh hoặc bảng lồng."
+                    }
+                ]
+            }
+        ];
+
+        const part3Question = {
+            id: "P3_1",
+            tag: "Bài 9 - Bảng trong HTML",
+            wordBank: ["<table>", "<tr>", "<td>", "<th>", "<ul>", "colspan", "rowspan", "in đậm"],
+            blanks: [
+                {
+                    index: 1,
+                    answer: "<table>",
+                    explanation: "Toàn bộ cấu trúc bảng HTML luôn được bao bọc bên trong cặp thẻ <table>...</table>."
+                },
+                {
+                    index: 2,
+                    answer: "<tr>",
+                    explanation: "Mỗi hàng (dòng) trong bảng được khai báo bằng cặp thẻ <tr>...</tr> (Table Row)."
+                },
+                {
+                    index: 3,
+                    answer: "<th>",
+                    explanation: "Thẻ <th> (Table Header) tạo ô tiêu đề cho cột với chữ mặc định được in đậm và căn giữa."
+                },
+                {
+                    index: 4,
+                    answer: "colspan",
+                    explanation: "Thuộc tính colspan cho phép gộp nhiều cột liền kề theo chiều ngang trên cùng một hàng."
+                }
+            ]
+        };
+
+        // =========================================================================
+        // BIẾN TRẠNG THÁI BÀI THI
+        // =========================================================================
+        let studentInfo = {};
+        let userAnswersPart1 = {};
+        let userAnswersPart2 = {};
+        let userAnswersPart3 = {};
+        let secondsElapsed = 0;
+        let timerInterval = null;
+        let isSubmitted = false;
+
+        document.getElementById("student-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById("fullName").value.trim();
+            const className = document.getElementById("className").value;
+            const dobRaw = document.getElementById("dob").value;
+
+            if (!fullName || !className || !dobRaw) return;
+
+            const [y, m, d] = dobRaw.split("-");
+            const dobFormatted = `${d}/${m}/${y}`;
+
+            studentInfo = { fullName, className, dob: dobFormatted };
+
+            document.getElementById("display-name").textContent = studentInfo.fullName;
+            document.getElementById("display-class").textContent = studentInfo.className;
+            document.getElementById("display-dob").textContent = studentInfo.dob;
+
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            document.getElementById("timer-box").classList.remove("hidden");
+
+            renderQuestions();
+            startTimer();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, "0");
+                const secs = String(secondsElapsed % 60).padStart(2, "0");
+                document.getElementById("timer-display").textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function formatDuration(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m} phút ${s} giây`;
+        }
+
+        function renderQuestions() {
+            // Phần I
+            const p1Container = document.getElementById("part1-container");
+            const letters = ["A", "B", "C", "D"];
+
+            p1Container.innerHTML = part1Questions.map((q, idx) => `
+                <div id="card-${q.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6 transition">
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <h3 class="font-bold text-gray-900 text-base leading-relaxed">
+                            <span class="text-bazan-700 font-extrabold">Câu ${idx + 1} (${q.tag}):</span> ${escapeHTML(q.question)}
+                        </h3>
+                        <span id="badge-${q.id}" class="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
+                            Chưa chọn
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="opts-${q.id}">
+                        ${q.options.map((opt, optIdx) => `
+                            <button type="button" onclick="selectPart1('${q.id}', ${optIdx})"
+                                id="btn-${q.id}-${optIdx}"
+                                class="text-left p-3.5 rounded-xl border-2 border-gray-200 hover:border-bazan-500 hover:bg-bazan-50/50 transition flex items-center gap-3 group">
+                                <span class="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-bazan-600 group-hover:text-white font-bold text-sm flex items-center justify-center shrink-0 transition">
+                                    ${letters[optIdx]}
+                                </span>
+                                <span class="text-sm text-gray-800 font-mono font-semibold">${escapeHTML(opt)}</span>
+                            </button>
+                        `).join("")}
+                    </div>
+                </div>
+            `).join("");
+
+            // Phần II
+            const p2Container = document.getElementById("part2-container");
+            p2Container.innerHTML = part2Questions.map((q, idx) => {
+                userAnswersPart2[q.id] = {};
+                return `
+                <div id="card-${q.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <h3 class="font-bold text-gray-900 text-base">
+                            <span class="text-daquy-600 font-extrabold">Câu ${idx + 1} (${q.tag}):</span>
+                        </h3>
+                        <span id="badge-${q.id}" class="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
+                            0/4 ý
+                        </span>
+                    </div>
+                    <div class="bg-gray-50 border-l-4 border-daquy-500 p-3.5 rounded-r-xl text-sm text-gray-800 whitespace-pre-line mb-4 font-medium">
+                        ${escapeHTML(q.stem)}
+                    </div>
+                    <div class="divide-y divide-gray-100 border border-gray-200 rounded-xl overflow-hidden">
+                        ${q.subQuestions.map((sub, subIdx) => `
+                            <div id="row-${q.id}-${subIdx}" class="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white hover:bg-gray-50/70 transition">
+                                <p class="text-sm text-gray-800 flex-grow leading-relaxed">${escapeHTML(sub.label)}</p>
+                                <div class="flex items-center gap-2 shrink-0" id="btns-${q.id}-${subIdx}">
+                                    <button type="button" onclick="selectPart2('${q.id}', ${subIdx}, true)"
+                                        id="btn-${q.id}-${subIdx}-true"
+                                        class="px-4 py-1.5 rounded-lg border-2 border-gray-200 text-xs font-bold text-gray-700 hover:border-bazan-600 hover:text-bazan-700 transition">
+                                        Đúng
+                                    </button>
+                                    <button type="button" onclick="selectPart2('${q.id}', ${subIdx}, false)"
+                                        id="btn-${q.id}-${subIdx}-false"
+                                        class="px-4 py-1.5 rounded-lg border-2 border-gray-200 text-xs font-bold text-gray-700 hover:border-bazan-600 hover:text-bazan-700 transition">
+                                        Sai
+                                    </button>
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `}).join("");
+
+            // Phần III
+            const p3Container = document.getElementById("part3-container");
+            const optionsHTML = part3Question.wordBank
+                .map(w => `<option value="${escapeHTML(w)}">${escapeHTML(w)}</option>`)
+                .join("");
+
+            const makeSelect = (num) => `
+                <select id="blank-${num}" onchange="selectPart3(${num}, this.value)"
+                    class="inline-block mx-1 px-2.5 py-1 rounded-lg border-2 border-bazan-600 bg-daquy-50 font-mono font-bold text-sm text-bazan-900 focus:outline-none focus:ring-2 focus:ring-bazan-600 cursor-pointer">
+                    <option value="">-- (${num}) Chọn từ/thẻ --</option>
+                    ${optionsHTML}
+                </select>
+            `;
+
+            p3Container.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <h3 class="font-bold text-gray-900 text-base">
+                            <span class="text-bazan-800 font-extrabold">Câu hỏi (${part3Question.tag}):</span> Chọn từ/thẻ HTML thích hợp để điền vào các chỗ khuyết (1), (2), (3), (4)
+                        </h3>
+                        <span id="badge-P3" class="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
+                            0/4 chỗ trống
+                        </span>
+                    </div>
+
+                    <div class="bg-bazan-50 border border-bazan-200 rounded-xl p-3.5">
+                        <p class="text-xs font-bold text-bazan-800 mb-2"><i class="fa-solid fa-tags mr-1"></i> Danh sách từ/thẻ HTML gợi ý:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${part3Question.wordBank.map(w => `
+                                <span class="px-2.5 py-1 bg-white border border-bazan-300 rounded-md font-mono text-xs font-bold text-bazan-900 shadow-xs">
+                                    ${escapeHTML(w)}
+                                </span>
+                            `).join("")}
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 border-l-4 border-bazan-700 p-4 sm:p-5 rounded-r-xl text-sm sm:text-base text-gray-800 leading-loose">
+                        "Để xây dựng một bảng trong HTML, trước hết toàn bộ cấu trúc bảng được đặt trong cặp thẻ ${makeSelect(1)} . Mỗi hàng trong bảng được khai báo bởi cặp thẻ ${makeSelect(2)} . Để tạo ô tiêu đề cho cột với chữ mặc định được in đậm và căn giữa, ta dùng thẻ ${makeSelect(3)} . Khi cần gộp nhiều cột theo chiều ngang trên cùng một hàng thành một ô duy nhất, ta khai báo thuộc tính ${makeSelect(4)} bên trong thẻ của ô đó."
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectPart1(qId, optIdx) {
+            if (isSubmitted || userAnswersPart1[qId] !== undefined) return;
+            userAnswersPart1[qId] = optIdx;
+
+            const optsWrapper = document.getElementById(`opts-${qId}`);
+            optsWrapper.classList.add("option-locked");
+
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`btn-${qId}-${i}`);
+                if (i === optIdx) {
+                    btn.classList.remove("border-gray-200");
+                    btn.classList.add("border-bazan-700", "bg-bazan-50", "ring-2", "ring-bazan-600/30");
+                    btn.querySelector("span:first-child").classList.remove("bg-gray-100");
+                    btn.querySelector("span:first-child").classList.add("bg-bazan-700", "text-daquy-400");
+                } else {
+                    btn.classList.add("opacity-55");
+                }
+            }
+
+            const badge = document.getElementById(`badge-${qId}`);
+            badge.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Đã khóa đáp án`;
+            badge.className = "shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-bazan-100 text-bazan-800";
+
+            updateProgress();
+        }
+
+        function selectPart2(qId, subIdx, val) {
+            if (isSubmitted || userAnswersPart2[qId][subIdx] !== undefined) return;
+            userAnswersPart2[qId][subIdx] = val;
+
+            const btnGroup = document.getElementById(`btns-${qId}-${subIdx}`);
+            btnGroup.classList.add("option-locked");
+
+            const btnTrue = document.getElementById(`btn-${qId}-${subIdx}-true`);
+            const btnFalse = document.getElementById(`btn-${qId}-${subIdx}-false`);
+
+            if (val === true) {
+                btnTrue.classList.remove("border-gray-200", "text-gray-700");
+                btnTrue.classList.add("bg-bazan-700", "border-bazan-700", "text-daquy-400");
+                btnFalse.classList.add("opacity-40");
+            } else {
+                btnFalse.classList.remove("border-gray-200", "text-gray-700");
+                btnFalse.classList.add("bg-bazan-700", "border-bazan-700", "text-daquy-400");
+                btnTrue.classList.add("opacity-40");
+            }
+
+            const answeredCount = Object.keys(userAnswersPart2[qId]).length;
+            const badge = document.getElementById(`badge-${qId}`);
+            badge.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> ${answeredCount}/4 ý`;
+            if (answeredCount === 4) {
+                badge.className = "shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-daquy-200 text-bazan-900";
+            }
+
+            updateProgress();
+        }
+
+        function selectPart3(blankNum, val) {
+            if (!val || isSubmitted || userAnswersPart3[blankNum] !== undefined) return;
+            userAnswersPart3[blankNum] = val;
+
+            const selEl = document.getElementById(`blank-${blankNum}`);
+            selEl.disabled = true;
+            selEl.classList.remove("bg-daquy-50", "text-bazan-900");
+            selEl.classList.add("bg-bazan-700", "text-daquy-400", "border-bazan-800", "cursor-not-allowed");
+
+            const doneCount = Object.keys(userAnswersPart3).length;
+            const badge = document.getElementById("badge-P3");
+            badge.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> ${doneCount}/4 chỗ trống`;
+            if (doneCount === 4) {
+                badge.className = "shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-bazan-100 text-bazan-800";
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const p1Done = Object.keys(userAnswersPart1).length;
+            let p2Done = 0;
+            part2Questions.forEach(q => {
+                if (Object.keys(userAnswersPart2[q.id]).length === 4) p2Done++;
+            });
+            const p3Done = Object.keys(userAnswersPart3).length === 4 ? 1 : 0;
+            document.getElementById("progress-count").textContent = p1Done + p2Done + p3Done;
+        }
+
+        function confirmSubmit() {
+            const totalP1 = Object.keys(userAnswersPart1).length;
+            let totalSubP2 = 0;
+            part2Questions.forEach(q => totalSubP2 += Object.keys(userAnswersPart2[q.id]).length);
+            const totalP3 = Object.keys(userAnswersPart3).length;
+
+            if (totalP1 < 6 || totalSubP2 < 8 || totalP3 < 4) {
+                const ok = confirm("Bạn vẫn còn câu hỏi hoặc ô điền khuyết chưa hoàn thành. Bạn có chắc chắn muốn nộp bài ngay bây giờ không?");
+                if (!ok) return;
+            }
+            gradeAndSubmit();
+        }
+
+        function gradeAndSubmit() {
+            isSubmitted = true;
+            clearInterval(timerInterval);
+
+            // Phần I: 6 câu * 1.0 điểm = 6.0 điểm
+            let part1Score = 0;
+            part1Questions.forEach(q => {
+                if (userAnswersPart1[q.id] === q.answer) {
+                    part1Score += 1.0;
+                }
+            });
+
+            // Phần II: 2 câu nhóm * 1.0 điểm = 2.0 điểm
+            // Chuẩn Bộ GD&ĐT: Đúng 1 ý: 0.1 | Đúng 2 ý: 0.25 | Đúng 3 ý: 0.5 | Đúng 4 ý: 1.0
+            let part2Score = 0;
+            const p2Details = {};
+
+            part2Questions.forEach(q => {
+                let correctSubs = 0;
+                q.subQuestions.forEach((sub, idx) => {
+                    if (userAnswersPart2[q.id][idx] === sub.answer) {
+                        correctSubs++;
+                    }
+                });
+
+                let qScore = 0;
+                if (correctSubs === 1) qScore = 0.1;
+                else if (correctSubs === 2) qScore = 0.25;
+                else if (correctSubs === 3) qScore = 0.5;
+                else if (correctSubs === 4) qScore = 1.0;
+
+                p2Details[q.id] = { correctSubs, qScore };
+                part2Score += qScore;
+            });
+
+            // Phần III: 4 vị trí * 0.5 điểm = 2.0 điểm
+            let part3Score = 0;
+            part3Question.blanks.forEach(b => {
+                if (userAnswersPart3[b.index] === b.answer) {
+                    part3Score += 0.5;
+                }
+            });
+
+            // Tổng điểm (6.0 + 2.0 + 2.0 = 10.0 điểm)
+            const totalScore = Math.round((part1Score + part2Score + part3Score) * 100) / 100;
+
+            let rank = "Chưa đạt";
+            let rankColor = "text-red-600";
+            if (totalScore >= 8.0) {
+                rank = "Giỏi";
+                rankColor = "text-emerald-600";
+            } else if (totalScore >= 6.5) {
+                rank = "Khá";
+                rankColor = "text-blue-600";
+            } else if (totalScore >= 5.0) {
+                rank = "Đạt";
+                rankColor = "text-amber-600";
+            }
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("timer-box").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+
+            document.getElementById("res-student-info").textContent = 
+                `Học sinh: ${studentInfo.fullName} | Lớp: ${studentInfo.className} | Ngày sinh: ${studentInfo.dob}`;
+            document.getElementById("res-part1").textContent = part1Score.toFixed(2);
+            document.getElementById("res-part2").textContent = part2Score.toFixed(2);
+            document.getElementById("res-part3").textContent = part3Score.toFixed(2);
+            document.getElementById("res-total").textContent = totalScore.toFixed(2);
+            
+            const rankEl = document.getElementById("res-rank");
+            rankEl.textContent = rank;
+            rankEl.className = `text-xl font-extrabold mt-1 ${rankColor}`;
+            document.getElementById("res-time").textContent = formatDuration(secondsElapsed);
+
+            renderReview(p2Details, part3Score);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            const payload = {
+                timestamp: new Date().toLocaleString("vi-VN"),
+                fullName: studentInfo.fullName,
+                className: studentInfo.className,
+                dob: studentInfo.dob,
+                part1Score: part1Score.toFixed(2),
+                part2Score: part2Score.toFixed(2),
+                part3Score: part3Score.toFixed(2),
+                totalScore: totalScore.toFixed(2),
+                rank: rank
+            };
+
+            syncToGoogleSheets(payload);
+        }
+
+        function syncToGoogleSheets(data) {
+            const statusEl = document.getElementById("sync-status");
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("DÁN_MÃ_CỦA_BẠN")) {
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-daquy-400"></i> Chưa cấu hình URL Google Sheets`;
+                return;
+            }
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Đã lưu điểm thành công về bảng tính!`;
+            })
+            .catch(err => {
+                console.error("Lỗi đồng bộ:", err);
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-400"></i> Lỗi kết nối lưu điểm.`;
+            });
+        }
+
+        function renderReview(p2Details, part3Score) {
+            const container = document.getElementById("review-container");
+            const letters = ["A", "B", "C", "D"];
+            let html = "";
+
+            // Review Phần I
+            part1Questions.forEach((q, idx) => {
+                const userChoice = userAnswersPart1[q.id];
+                const isCorrect = userChoice === q.answer;
+                const statusBadge = isCorrect
+                    ? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700"><i class="fa-solid fa-check mr-1"></i>Đúng (+1.0đ)</span>`
+                    : `<span class="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700"><i class="fa-solid fa-xmark mr-1"></i>Sai (0đ)</span>`;
+
+                html += `
+                <div class="bg-white rounded-2xl shadow-sm border ${isCorrect ? 'border-emerald-200' : 'border-red-200'} p-5 sm:p-6">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <h4 class="font-bold text-gray-900 text-sm sm:text-base">
+                            <span class="text-bazan-700">Phần I - Câu ${idx + 1} (${q.tag}):</span> ${escapeHTML(q.question)}
+                        </h4>
+                        ${statusBadge}
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        ${q.options.map((opt, optIdx) => {
+                            let style = "border-gray-200 bg-gray-50 text-gray-600";
+                            let icon = "";
+                            if (optIdx === q.answer) {
+                                style = "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold";
+                                icon = `<i class="fa-solid fa-circle-check text-emerald-600 ml-auto"></i>`;
+                            } else if (optIdx === userChoice && !isCorrect) {
+                                style = "border-red-400 bg-red-50 text-red-900 font-semibold";
+                                icon = `<i class="fa-solid fa-circle-xmark text-red-600 ml-auto"></i>`;
+                            }
+                            return `
+                            <div class="p-3 rounded-xl border ${style} text-sm flex items-center gap-2.5 font-mono">
+                                <span class="font-bold font-sans">${letters[optIdx]}.</span>
+                                <span>${escapeHTML(opt)}</span>
+                                ${icon}
+                            </div>`;
+                        }).join("")}
+                    </div>
+                    <div class="bg-daquy-50 border border-daquy-300 rounded-xl p-3.5 text-xs sm:text-sm text-gray-800">
+                        <strong class="text-bazan-800"><i class="fa-solid fa-lightbulb text-daquy-600 mr-1"></i> Giải thích:</strong> ${escapeHTML(q.explanation)}
+                    </div>
+                </div>`;
+            });
+
+            // Review Phần II
+            part2Questions.forEach((q, idx) => {
+                const detail = p2Details[q.id];
+                html += `
+                <div class="bg-white rounded-2xl shadow-sm border border-daquy-400 p-5 sm:p-6">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <h4 class="font-bold text-gray-900 text-sm sm:text-base">
+                            <span class="text-daquy-600">Phần II - Câu ${idx + 1} (${q.tag}):</span> Đạt ${detail.correctSubs}/4 ý
+                        </h4>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-daquy-100 text-bazan-900 border border-daquy-400">
+                            +${detail.qScore.toFixed(2)} điểm
+                        </span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-xl text-xs sm:text-sm text-gray-700 whitespace-pre-line mb-4 border border-gray-200">
+                        ${escapeHTML(q.stem)}
+                    </div>
+                    <div class="space-y-3">
+                        ${q.subQuestions.map((sub, subIdx) => {
+                            const uVal = userAnswersPart2[q.id][subIdx];
+                            const isSubCorrect = uVal === sub.answer;
+                            const uText = uVal === undefined ? "Bỏ trống" : (uVal ? "Đúng" : "Sai");
+                            const cText = sub.answer ? "Đúng" : "Sai";
+                            return `
+                            <div class="p-3.5 rounded-xl border ${isSubCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-red-200 bg-red-50/40'} text-xs sm:text-sm space-y-1.5">
+                                <div class="flex items-start justify-between gap-2">
+                                    <p class="font-medium text-gray-900">${escapeHTML(sub.label)}</p>
+                                    <span class="shrink-0 font-bold ${isSubCorrect ? 'text-emerald-600' : 'text-red-600'}">
+                                        ${isSubCorrect ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'}
+                                    </span>
+                                </div>
+                                <div class="flex flex-wrap gap-4 text-xs">
+                                    <span>Bạn chọn: <strong class="${isSubCorrect ? 'text-emerald-700' : 'text-red-700'}">${uText}</strong></span>
+                                    <span>Đáp án đúng: <strong class="text-emerald-700">${cText}</strong></span>
+                                </div>
+                                <p class="text-xs text-gray-600 pt-1 border-t border-gray-200/70">
+                                    <strong class="text-bazan-700">Giải thích:</strong> ${escapeHTML(sub.explanation)}
+                                </p>
+                            </div>`;
+                        }).join("")}
+                    </div>
+                </div>`;
+            });
+
+            // Review Phần III
+            html += `
+            <div class="bg-white rounded-2xl shadow-sm border border-bazan-300 p-5 sm:p-6 space-y-4">
+                <div class="flex items-start justify-between gap-3">
+                    <h4 class="font-bold text-gray-900 text-sm sm:text-base">
+                        <span class="text-bazan-800">Phần III - Câu Điền Khuyết (${part3Question.tag})</span>
+                    </h4>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-bazan-100 text-bazan-800">
+                        +${part3Score.toFixed(2)} / 2.00 điểm
+                    </span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    ${part3Question.blanks.map(b => {
+                        const uChoice = userAnswersPart3[b.index];
+                        const isOk = uChoice === b.answer;
+                        return `
+                        <div class="p-3.5 rounded-xl border ${isOk ? 'border-emerald-200 bg-emerald-50/50' : 'border-red-200 bg-red-50/50'} text-xs sm:text-sm space-y-1">
+                            <div class="flex items-center justify-between font-bold">
+                                <span class="text-bazan-900">Vị trí (${b.index}):</span>
+                                <span class="${isOk ? 'text-emerald-600' : 'text-red-600'}">
+                                    ${isOk ? 'Đúng (+0.5đ)' : 'Sai (0đ)'}
+                                </span>
+                            </div>
+                            <p>Bạn chọn: <code class="html-tag">${uChoice ? escapeHTML(uChoice) : 'Bỏ trống'}</code></p>
+                            <p>Đáp án đúng: <code class="html-tag">${escapeHTML(b.answer)}</code></p>
+                            <p class="text-xs text-gray-600 pt-1">${escapeHTML(b.explanation)}</p>
+                        </div>`;
+                    }).join("")}
+                </div>
+            </div>`;
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
